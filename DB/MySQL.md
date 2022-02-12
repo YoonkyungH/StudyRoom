@@ -84,6 +84,15 @@ DROP TABLE [테이블명];
 > #### 📌 MySQL 계정 비밀번호 변경
 > `SET PASSWORD = PASSWORD('[바꿀 비밀번호]');`   
 
+### 테이블 구조 복사
+```sql
+CREATE TABLE [복사해 생성될 테이블] LIKE [복사될 테이블];
+```   
+
+### 전체 데이터 복사
+```sql
+INSERT INTO [붙여넣기 될 테이블] SELECT * FROM [복사할 테이블];
+```
 
 ## MySQL CRUD
 **C**reate   
@@ -163,3 +172,13 @@ id를 기준으로 **역순으로 정렬**시켰다.
 ![](https://images.velog.io/images/dbsrud11/post/8e358d28-43ea-479f-bf11-37e748a50e98/image.png)   
 이번에도 UPDATE와 마찬가지로 **WHERE가 굉장히 중요**하다.   
 그리고 DELETE 자체는 **굉장히 위험한 명령어**이므로 주의하여 사용해야 한다.   
+
+
+### + LEFT JOIN
+```sql
+SELECT * FROM [테이블명] LEFT JOIN [조인할 테이블명] ON [테이블명].[컬럼명] = [테이블명].[컬럼명];
+```   
+: 보고싶은 컬럼만 `*` 자리에 `,`으로 구분해 나열하여도 된다.
+
+- `ON` 뒤에는 **기준**이 온다.
+- `AS`를 활용해 **명시하고 싶은 컬럼명**을 적어주어도 된다. 이의 위치는 SELECT 다음
