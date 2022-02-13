@@ -15,6 +15,8 @@ Controller로 HTTP 요청을 `@ModelAttribute` 모델에 바인딩 할 때 주�
 
 - `@Positive`: **양수**만   
 
+- `@NotEmpty`: Null, 빈 문자열 불가
+
 [➡️ 어노테이션 참고](https://bamdule.tistory.com/35)   
 
 #### 동작 원리
