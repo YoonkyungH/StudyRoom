@@ -38,3 +38,26 @@ Spring은 **AOP 기반으로 메소드 요청을 가로채 유효성 검증**을
 `@Valid`와 `@Validated`에 의한 예외 클래스는 다르다.   
 - `@Valid`: MethodArgumentNotValidException   
 - `@Validated`: ConstraintViolationException   
+
+
+## BindingResult
+: `org.springFramework.validation.BindingResult`   
+Errors의 하위 인터페이스로 폼 값을 **커맨드 객체에 바인딩한 결과를 저장**하고 **에러코드로 메시지를 가져옴**   
+
+#### Errors 인터페이스의 에러 발생 여부를 확인하기 위한 메소드
+- `boolean hasErrors()`
+: 에러가 존재할 경우 true 반환
+- `int getErrorCount()`
+: 에러 개수 반환
+- `boolean hasGlobalErrors()`
+: reject() 메소드를 이용해 추가된 글로벌 에러가 존재할 경우 true 반환
+- `int getGlovalErrorCount()`
+: reject() 메소드를 이용해 추가된 에러 개수 반환
+- `boolean hasFieldErrors()`
+: rejectValue() 메소드를 이용해 추가된 에러 발생할 경우 true 반환
+- `int getFieldErrorCount()`
+: rejectValue() 메소드를 이용해 추가 에러 개수 반환
+- `boolean hasFieldErrors(String field)`
+: rejectValue() 메소드 이용해 추가한 특정 필드의 에러가 존재할 경우 true 반환
+- `int getFieldErrorCount(String filed)`
+: rejectValue() 메소드를 이용해 추가한 특정 필드의 에러 개수 반환
