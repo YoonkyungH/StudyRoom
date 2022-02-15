@@ -60,4 +60,8 @@ Errors의 하위 인터페이스로 폼 값을 **커맨드 객체에 바인딩�
 - `boolean hasFieldErrors(String field)`
 : rejectValue() 메소드 이용해 추가한 특정 필드의 에러가 존재할 경우 true 반환
 - `int getFieldErrorCount(String filed)`
-: rejectValue() 메소드를 이용해 추가한 특정 필드의 에러 개수 반환
+: rejectValue() 메소드를 이용해 추가한 특정 필드의 에러 개수 반환   
+
+- `getFieldErrors`   
+: <FieldError> getFieldErrors() 나열   
+- `getFileError`
