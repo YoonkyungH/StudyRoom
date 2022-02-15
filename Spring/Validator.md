@@ -64,4 +64,16 @@ Errors의 하위 인터페이스로 폼 값을 **커맨드 객체에 바인딩�
 
 - `getFieldErrors`   
 : <FieldError> getFieldErrors() 나열   
-- `getFileError`
+- `getFileError`   
+: 필드와 관련된 오류가 있는 경우 첫번째 오류를 가져옴   
+
+### 🤷🏻‍♀️ @Valid 어노테이션을 사용할 경우 BindingResult를 Mock 객체로 만들어야 할 때는?   
+Mock 객체를 사용할 수 있도록 **setup 코드를 삽입**하여 해당 BindingResult를 무시하고 테스트 수행할 수 있도록 하기   
+  
+```java
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(mockBindingResult.hasErrors()).thenReturn(true);
+    }
+```
