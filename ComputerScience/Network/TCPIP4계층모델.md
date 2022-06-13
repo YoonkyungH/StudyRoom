@@ -5,6 +5,9 @@
 
 TCP/IP 4계층 모델은 OSI 7계층 모델과 많이 비교된다.
 
+<img width="591" alt="image" src="https://user-images.githubusercontent.com/57247474/173315086-ca7cb139-4b6c-4a3c-9188-8b7ce9a83589.png">
+
+
 TCP/IP의 애플리케이션 계층은 OSI에서 애플리케이션/프레젠테이션/세션 계층으로 나뉜다.
 그리고 인터넷 계층은 네트워크 계층이라 불리며, 링크 계층은 데이터 링크/물리 계층으로 나누어 표현한다.
 
@@ -83,6 +86,8 @@ IP 주소를 통해 지정된 목적지로 전송
 ### 이더넷 프레임
 : 에러 검출, 캡슐화 기능
 
+<img width="1085" alt="image" src="https://user-images.githubusercontent.com/57247474/173316240-5b5b4281-1462-43f8-a8b8-99b160cf8baf.png">
+
 > - **Preamble**  
 > : 이더넷 프레임 시작을 알림 
 > - **SFD**  
@@ -97,6 +102,8 @@ IP 주소를 통해 지정된 목적지로 전송
 > : 에러 확인 비트
 
 ### 캡슐화
+<img width="936" alt="image" src="https://user-images.githubusercontent.com/57247474/173317718-e6f57f82-9232-4d78-894d-19dbeb1bc7f9.png">
+
 
 ## PDU
 : Protocol Data Unit, 데이터가 전달될 때 한 덩어리의 단위
