@@ -32,3 +32,33 @@ RTT 증가를 불러일으킨다. (TCP의 3-way handshake 반복 떄문)
 > #### 허프만 코딩 압축 알고리즘
 > : huffman coding, 헤더를 압축하는 방법 중 하나  
 > 문자열을 문자 단위로 쪼개어 빈도수가 높은 정보는 적은 비트 수, 빈도수가 낮은 정보는 비트 수를 많이 사용하여 표현하는 방법이다.
+
+### HTTPS
+: 애플리케이션 계층과 전송 계층 사이 신뢰 계층인 SSL/TLS 계층을 넣은 **신뢰할 수 있는 HTTP 요청**
+
+#### SSL/TLS
+: SSL(Secure Socket Layer), TLS(Transport Layer Security Protocol)
+
+이는 SSL에서 버전이 점점 올라가며 TLS 1.3까지 버전이 오르며 명칭이 TLS로 변경된 것이다.  
+보통은 이를 합쳐서 SSL/TLS로 많이들 부른다.
+
+SSL/TLS는 전송 계층에서 보안을 제공하는 프로토콜이다.  
+(제 3자가 메시지를 도청하거나 변조하지 못하도록 함 - 인터셉트 방지)
+
+> - **SEO**
+> : Search Engine Optimization, 검색엔진 최적화  
+> 예를 들어 구글에서 어떤 웹 사이트를 검색했을 때 그 결과를 페이지 상단엔 노출시켜 많은 사람들이 볼 수 있도록 최적화하는 방법을 뜻한다.
+
+### HTTPS 구축 방법
+HTTPS 구축 방법에는 세 가지가 있다.
+
+1. CA에서 직접 구매한 인증키를 기반으로 구축
+2. 서버 앞단의 HTTPS를 제공하는 로드밸런서를 두어 구축
+3. 서버 앞단에 HTTPS를 제공하는 CDN을 두어 구축
+
+### HTTP/3
+: www에서 정보를 교환하는데 사용되는 HTTP 세번째 버전
+
+#### HTTP/2 vs HTTP/3
+HTTP/2는 TCP위에서 돌아가지만 HTTP/3는 QUIC라는 계층 위애서 돌아가며 TCP가 아닌 UDP 기반이다.  
+(3-way handshake 과정 생략 가능)
