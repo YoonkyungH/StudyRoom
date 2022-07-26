@@ -37,6 +37,9 @@ Model-View-Controller
 ### 스프링 MVC 구조
 주 구성요소로는 Model, View, Controller가 있지만 이들이 유기적으로 동작하기 위해 DispatcherServlet(Front Controller), Handler(Controller), ModelAndView, ViewResolver가 존재한다.
 
+<img width="1390" alt="image" src="https://user-images.githubusercontent.com/57247474/180902552-0bc6c2b9-7678-4401-8877-48f010d6e800.png">
+
+
 - **DispatcherServlet(Front Controller)**  
 : 제일 앞단에서 HTTP Request를 처리하는 컨트롤러  
 - **Controller(Handler)**  
@@ -115,4 +118,7 @@ public String save(
 }
   
 ```
-  
+
+> `@RestController`  
+> : **@Controller**는 반환값이 String이면 뷰 이름으로 인식하여 **뷰를 찾고 랜더링**한다.  
+> 반면, @RestController는 반환시 **HTTP 메시지 마디에 바로 입력**하여 실행 결과로 반환 하려는 문자열을 그대로 반환받을 수 있다.
