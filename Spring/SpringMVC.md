@@ -37,8 +37,7 @@ Model-View-Controller
 ### 스프링 MVC 구조
 주 구성요소로는 Model, View, Controller가 있지만 이들이 유기적으로 동작하기 위해 DispatcherServlet(Front Controller), Handler(Controller), ModelAndView, ViewResolver가 존재한다.
 
-<img width="1390" alt="image" src="https://user-images.githubusercontent.com/57247474/180902552-0bc6c2b9-7678-4401-8877-48f010d6e800.png">
-
+<img width="1390" alt="image" src="https://user-images.githubusercontent.com/57247474/180902552-0bc6c2b9-7678-4401-8877-48f010d6e800.png">  
 
 - **DispatcherServlet(Front Controller)**  
 : 제일 앞단에서 HTTP Request를 처리하는 컨트롤러  
@@ -119,6 +118,77 @@ public String save(
   
 ```
 
+### 스프링MVC 기본기능  
+클라이언트에서 서버로 요청 데이터를 전달할 때는
+- GET - 쿼리 파라미터
+- POST - HTML Form
+- HTTP message body  
+방법을 이용한다.  
+
+GET 쿼리 파라미터 전송 방식, POST HTML Form 전송 방식은 어차피 형식이 동일하기 때문에 요청 파라미터 조회라고 이른다.  
+요청 파라미터를 받을 경우,  
+- 파라미터에 **HttpServletRequest와 HttpServletResponse** 받기
+- **@RequestParam** (더 편리)
+- **@ModelAttribute**  
+를 이용할 수 있다.  
+
 > `@RestController`  
 > : **@Controller**는 반환값이 String이면 뷰 이름으로 인식하여 **뷰를 찾고 랜더링**한다.  
-> 반면, @RestController는 반환시 **HTTP 메시지 마디에 바로 입력**하여 실행 결과로 반환 하려는 문자열을 그대로 반환받을 수 있다.
+> 반면, @RestController는 반환시 **HTTP 메시지 마디에 바로 입력**하여 실행 결과로 반환 하려는 문자열을 그대로 반환받을 수 있다.  
+>   
+> Controller + ResponseBody  
+> RestAPI(HTTP API)를 만들 때 사용하는 컨트롤러
+
+스프링 MVC는 파라미터에 `@ModelAttribute`가 있을 경우
+- 객체를 생성하고
+- 요청 파라미터의 이름으로 해당 객체의 프로퍼티를 찾아 해당 프로퍼티의 setter를 호출하여 파라미터 값을 입력(바인딩)한다.  
+(파라미터 이름이 username일 경우 setUsername() 메소드를 찾아 호출하며 값을 입력)  
+
+@ModelAttribute는 생략이 가능한데 @RequestParam 또한 생략할 수 있어 혼란이 될 수 있다.  
+그래서 스프링은 String, int, Integer와 같은 단순 타입일 때는 @RequestParam, 나머지는 @ModelAttribute로 인식한다.
+
+```java
+...
+@ResponseBody
+@RequestMapping("/경로")
+public String modelAttribute(@ModelAttribute ExData exData) {
+// 또는 파라미터에 (ExData exData)로 어노테이션을 생략해 넣을 수 있음
+  log.info("username={}, age={}", exData.getUsername(), exData.getAge());
+  
+  return "ok";
+}
+```
+
+HTTP message body에 단순 텍스트를 담아 요청할 경우에는 @RequestParam, @ModelAttribute를 사용할 수 없다.
+
+그래서 스프링MVC는 InputStream, OutputStream을 지원한다.  
+아니면 HttpEntity(HTTP 헤더, 바디 정보를 편리하게 조회)를 사용할 수도 있다. 이 방법이 더 편리하며 응답에도 사용(RequestEntity, ResponseEntity) 가능하다.  
+
+> `@RequestBody`  
+> : 이 어노테이션을 사용하면 HTTP 메시지 바디 정보를 편리하게 조회 가능하다.  
+> (헤더 정보가 필요하다면 HttpEntity 또는 @RequestHeader 사용하기)  
+>   
+> objectMapper를 이용하지 않고도 바로 받을 수 있다.
+>   
+> 메시지 바디를 직접 조회하는 기능은 요청 파라미터를 조회하는 @RequestParam, @ModelAttribute와는 전혀 관계없다.
+>   
+> - 요청 파라미터 조회: **@RequestParam, @ModelAttribute**  
+> - HTTP 메시지 바디 직접 조회: **@RequestBody**  
+
+```java
+@ResponseBody
+@PostMapping("/경로")
+public String reqeustBodyString(@RequestBody String messageBody) {
+  log.info("messageBody={}", messageBody);
+  return "ok";
+}
+```
+@RequestBody는 직접 만든 객체를 지정할 수 있다. (Ex. @RequestBody ExData exData)  
+
+**즉, HttpEntity, @RequestBody는 HTTP 메시지 컨버터가 HTTP 메시지 바디 내용을 내가 원하는 문자나 객체 등으로 변환해준다.**
+
+그리고 주의할 점은 **@RequestBody는 생략 불가능**하다.  
+단순 타입에서는 @RequestParam, 나머지는 @ModelAttribute로 인식해버리기 때문에 생략하면 @ModelAttribute가 적용돼버린다.
+
+### RequestMappingHandlerAdapter & HTTP 메시지 컨버터 
+<img width="1384" alt="image" src="https://user-images.githubusercontent.com/57247474/181172893-6126ee1a-8cd2-4a83-9a7b-44897999535e.png">
