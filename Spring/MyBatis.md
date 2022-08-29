@@ -35,6 +35,8 @@ XML 형태로 쓰인 JDBC 코드라고 생각해도 될만큼 [JDBC](obsidian://
 #### 따라서 JDBC를 이용해 직접 개발하기 보단 MyBatis와 같은 프레임워크를 사용한다.
 
 ## MyBatis3 구조
+<img width="685" alt="image" src="https://user-images.githubusercontent.com/57247474/187131129-785cc4ef-f45a-41db-bfb7-fddc4d3e60e7.png">
+
 MyBatis는 DAO와 JDBC 사이 위치하여 서로를 매핑
 
 ## MyBatis3 주요 구성 요소
@@ -69,6 +71,8 @@ MyBatis는 DAO와 JDBC 사이 위치하여 서로를 매핑
 > : SQL 및 OR매핑 설정을 하는 XML 파일
 
 ## MyBatis3 주요 구성 요소 Database Access 순서
+<img width="691" alt="image" src="https://user-images.githubusercontent.com/57247474/187131223-fce5dab9-e58c-4867-bb85-bfde4ca9e1a4.png">
+
 - (1)~(3): 응용 프로그램 시작시 수행되는 프로세스
 - (4)~(10): 클라이언트의 각 요청에 대해 수행되는 프로세스
 
@@ -115,6 +119,8 @@ MyBatis는 DAO와 JDBC 사이 위치하여 서로를 매핑
 >따라서 각 스레드에 대한 인스턴스를 할당해야 했다. MyBatis-Spring 구성 요소에서 생성된 SqlSession 개체는 안전한 스레드 SqlSession 개체를 생성할 수 있다. 그래서 서비스 등 싱글톤 구성요소에 DI를 적용할 수 있다.
 
 ## MyBatis-Spring 주요 구성 요소 Database Access 순서
+<img width="688" alt="image" src="https://user-images.githubusercontent.com/57247474/187131300-9ca00360-c7e2-4e7f-8a84-f3fcc1fe7d02.png">
+
 - (1)~(4): 응용 프로그램 시작시 수행되는 프로세스
 - (5)~(11): 클라이언트의 각 요청에 대해 수행되는 프로세스
 
@@ -135,3 +141,267 @@ MyBatis는 DAO와 JDBC 사이 위치하여 서로를 매핑
 [보고 공부한 게시물](https://pangtrue.tistory.com/141)
 
 ---
+
+````java
+implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+````
+스프링부트에서 마이바티스를 사용할 때 위 코드를 넣어주면 의존성 있는 다른 마이바티스 관련 설정들도 함께 가져오기 때문에 하나만 추가해주어도 된다.
+
+DataBase 설정
+```java
+# MySQL Driver  
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver  
+  
+# DB URL  
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/webservice?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul  
+  
+# DB username  
+spring.datasource.username=root  
+  
+# DB password  
+spring.datasource.password=[비밀번호]  
+  
+# Console SQL print  
+spring.jpa.show-sql=true  
+  
+# DDL use (create/update/create-drop/validate/none)  
+spring.jpa.hibernate.ddl-auto=update  
+  
+# SQL formatting  
+spring.jpa.properties.hibernate.format_sql=true  
+  
+# MyBatis  
+spring.datasource.mapper-locations=classpath:/mapper/**/*.xml
+```
+
+어플리케이션 클래스와 과 같은 위치에 config 파일 생성
+```java
+package com.dbsrud.webservice;  
+  
+import org.apache.ibatis.session.SqlSessionFactory;  
+import org.mybatis.spring.SqlSessionFactoryBean;  
+import org.mybatis.spring.SqlSessionTemplate;  
+import org.mybatis.spring.annotation.MapperScan;  
+import org.springframework.beans.factory.annotation.Qualifier;  
+import org.springframework.beans.factory.annotation.Value;  
+import org.springframework.boot.context.properties.ConfigurationProperties;  
+import org.springframework.boot.jdbc.DataSourceBuilder;  
+import org.springframework.context.ApplicationContext;  
+import org.springframework.context.annotation.Bean;  
+import org.springframework.context.annotation.Configuration;  
+  
+import javax.sql.DataSource;  
+  
+@Configuration  
+// 패키지명  
+@MapperScan(value = "com.dbsrud.webservice", sqlSessionFactoryRef = "SqlSessionFactory")  
+public class MyBatisConfig {  
+  
+    @Value("${spring.datasource.mapper-locations}")  
+    String mPath;  
+  
+    @Bean(name = "dataSource")  
+    @ConfigurationProperties(prefix = "spring.datasource")  
+    public DataSource DataSource() {  
+        return DataSourceBuilder.create().build();  
+    }  
+  
+  
+    @Bean(name = "SqlSessionFactory")  
+    public SqlSessionFactory SqlSessionFactory(  
+            @Qualifier("dataSource") DataSource DataSource,  
+            ApplicationContext applicationContext) throws Exception  
+    {  
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();  
+        sqlSessionFactoryBean.setDataSource(DataSource);  
+        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(mPath));  
+  
+        return sqlSessionFactoryBean.getObject();  
+    }  
+  
+    @Bean(name = "SessionTemplate")  
+    public SqlSessionTemplate SqlSessionTemplate(@Qualifier("SqlSessionFactory") SqlSessionFactory firstSqlSessionFactory) {  
+        return new SqlSessionTemplate(firstSqlSessionFactory);  
+    }  
+}
+```
+
+resources/mapper/mapper.xml
+```xml
+파일만 생성해두고 추후 코드 작성
+```
+
+## findAll()
+API 구성하기  
+Controller
+```java
+package com.dbsrud.webservice.controller;  
+  
+import com.dbsrud.webservice.service.MemberService;  
+import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.http.HttpStatus;  
+import org.springframework.http.ResponseEntity;  
+import org.springframework.web.bind.annotation.RequestMapping;  
+import org.springframework.web.bind.annotation.RequestMethod;  
+import org.springframework.web.bind.annotation.RestController;  
+  
+@RestController  
+@RequestMapping(value = "/api/v1/app/")  
+public class MemberController {  
+  
+    @Autowired  
+    MemberService memberService;  
+  
+    @RequestMapping(value = "findAll", method = RequestMethod.POST)  
+    public ResponseEntity<?> findAll() {  
+        ResponseDTO responseDTO = new ResponseDTO();  
+        responseDTO.setResultCode("S0001");  
+        responseDTO.setRes(memberService.findAll());  
+  
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);  
+    }  
+}
+```
+
+값을 받기 위한 DTO 생성
+```java
+package com.dbsrud.webservice.controller;  
+  
+public class ResponseDTO {  
+  
+    private String resultCode;  
+    private Object res;  
+  
+    public String getResultCode() {  
+        return resultCode;  
+    }  
+  
+    public void setResultCode(String resultCode) {  
+        this.resultCode = resultCode;  
+    }  
+  
+    public Object getRes() {  
+        return res;  
+    }  
+  
+    public void setRes(Object res) {  
+        this.res = res;  
+    }  
+}
+```
+
+Service에서 Mapper 인터페이스를 호출하도록
+```java
+package com.dbsrud.webservice.service;  
+  
+import com.dbsrud.webservice.mapper.MemberMapper;  
+import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.stereotype.Service;  
+  
+import java.util.ArrayList;  
+import java.util.HashMap;  
+  
+@Service  
+public class MemberService {  
+  
+    @Autowired  
+    MemberMapper memberMapper;  
+  
+    public ArrayList<HashMap<String, Object>> findAll() {  
+        return memberMapper.findAll();  
+    }  
+}
+```
+
+즉, Controller에서 UserService 클래스의 findAll을 호출하고 Service에서 Mapper 인터페이스를 호출한다.  
+Mapper 인터페이스
+```java
+package com.dbsrud.webservice.mapper;  
+  
+import org.apache.ibatis.annotations.Mapper;  
+import org.springframework.stereotype.Repository;  
+  
+import java.util.ArrayList;  
+import java.util.HashMap;  
+  
+@Mapper  
+@Repository  
+public interface MemberMapper {  
+  
+    ArrayList<HashMap<String, Object>> findAll();  
+}
+```
+
+그리고 생성해두었던 Mapper.xml에서 코드를 작성해주면 된다.  
+resources/mapper/mapper.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.dbsrud.webservice.mapper.MemberMapper">  
+  
+    <select id="findAll" resultType="HashMap">  
+        SELECT * FROM member  
+    </select>  
+  
+</mapper>
+```
+
+여기까지 코드를 작성한 뒤 포스트맨을 사용해 http://localhost:8080/api/v1/app/findAll을 POST 방식으로 호출하면 DB에 들어있는 값을 확인할 수 있다.  
+<img width="684" alt="image" src="https://user-images.githubusercontent.com/57247474/187131381-41bdda81-df8d-4ad1-892d-2acb7eaa3eab.png">
+
+## createMember()
+insert를 구현하기 위해 Mapper에 creatMember() 생성
+```java
+void createMember(Model model);
+```
+
+MemberService에 메소드 추가
+```java
+public void createMember(Model model) {  
+    memberMapper.createMember(model);  
+}
+```
+
+요청 받을 RequestDTO 생성
+```java
+@Getter @Setter  
+public class RequestDTO {  
+  
+    private Long id;  
+    private int age;  
+    private String password;  
+    private String user_id;  
+    private String username;  
+}
+```
+
+Controller에서 requestDTO를 받아 멤버를 생성하기 위해 createMember 추가
+```java
+    @RequestMapping(value = "createMember", method = RequestMethod.POST)  
+    public String createMember(Model model, RequestDTO request) {  
+  
+        model.addAttribute("id", request.getId());  
+        model.addAttribute("age", request.getAge());  
+        model.addAttribute("password", request.getPassword());  
+        model.addAttribute("user_id", request.getUser_id());  
+        model.addAttribute("username", request.getUsername());  
+  
+        memberService.createMember(model);  
+//        memberService.createMember(request);  
+  
+        return "OK";  
+    }
+```
+
+그리고 INSERT 쿼리를 실행하기 위해 mapper.xml에 insert를 추가
+```xml
+<insert id="createMember" parameterType="com.dbsrud.webservice.controller.RequestDTO">  
+    insert into member  
+    (id, age, password, user_id, username)    values    (#{id}, #{age}, #{password}, #{user_id}, #{username})
+</insert>
+```
+
+member 테이블에 Insert  
+<img width="673" alt="image" src="https://user-images.githubusercontent.com/57247474/187131459-973034f5-a5b0-4bac-94d8-756e930f6cf8.png">
+
+[MyBatis 사용하기 참고](https://bongra.tistory.com/185)
