@@ -61,4 +61,47 @@ WAR은 응용 프로그램을 위한 포맷이기 때문에 **웹 관련 자원�
 
 WAR 파일도 Java의 JAR 옵션(Java -jar)을 이용해 생성하는 JAR 파일의 일종으로 웹 어플리케이션 전체를 패키징하기 위한 JAR 파일로 생각하면 된다.  
 
-[참고](https://ifuwanna.tistory.com/224)
+[참고](https://ifuwanna.tistory.com/224)  
+
+---
+
+## WAR file 만들어 배포
+build.gradle에 내용 추가  
+```java
+plugins {  
+   ...
+   id 'war'  
+}  
+  
+apply plugin: 'war'  
+bootWar {  
+   archiveName("webservice.war")  
+}
+
+bootWar.enabled = false  
+war.enabled = true
+
+dependencies {  
+   ...
+  
+   providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'  
+}
+```
+내장 톰캣을 사용하지 않기 위해서는 enabled =.. 와 providedRuntime ... 필요  
+
+(bootWar 설명)  
+```java
+bootWar {
+	archiveBaseName = 'war 패키징 시 이름 설정 Ex. web'
+	archiveFileName = 'war 패키징 시 이름 설정 Ex. web.war'
+	archiveVersion = "0.0.0"
+}
+```
+적용 후 빌드 WAR (터미널)  
+./gradlew bootwar  
+
+WAR 실행 (터미널)  
+java -jar ./build/libs/webservice.war  
+
+[참고](https://bigdatamaster.tistory.com/121)
+
