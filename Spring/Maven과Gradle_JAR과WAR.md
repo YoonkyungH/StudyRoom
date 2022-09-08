@@ -89,6 +89,17 @@ dependencies {
 ```
 내장 톰캣을 사용하지 않기 위해서는 enabled =.. 와 providedRuntime ... 필요  
 
+```java
+public class WebserviceApplication extends SpringBootServletInitializer {  
+  
+   @Override  
+   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {  
+      return super.configure(builder);  
+   }
+```
+위와 같이 SpringBootServletInitializer를 상속받고 오버라이드 해주어야 한다.  
+이를 **상속 받는다는 것은 tomcat과 같은 Servlet Container 환경에서 springboot 어플리케이션이 동작 가능하도록 웹 어플리케이션 컨텍스트를 구성한다는 의미**이다.  
+
 (bootWar 설명)  
 ```java
 bootWar {
