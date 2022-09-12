@@ -116,3 +116,25 @@ java -jar ./build/libs/webservice.war
 
 [참고](https://bigdatamaster.tistory.com/121)
 
+---
+
+## tomcat
+> 톰캣의 server.xml에서 Host의 appbase는 [tomcat 설치 디렉토리]/webapps이다.  
+url상의 기본 web root는 [appBase]/ROOT/ 즉, webapps/ROOT/가 된다.  
+따라서 http://localhost:8080/test.html를 호출하면 [appBase]/ROOT/itest.html을 출력하게 되는 것이다.  
+>
+> 또한, Host element 아래 Context를 설정할 수 있다.  
+이때 path는 url상의 주소가 되며 docBase는 어플리케이션 서버상의 위치가 된다.  
+docBase 값이 상대경로면 Host appBase부터의 상대경로가 되며, 절대경로라면 서버상의 절대 경로가 된다.  
+>
+> 톰캣 5.5 이후부터 Context 설정 위치가 [$CATALINA_BASE]/conf/[enginename]/[hostname]/으로 변경되었다.  
+> 그 덕분에 톰캣을 재시작할 필요없이 Context 설정 변경이 가능해졌다.  
+> 기본적으로 [$CATALINA_BASE]/conf/[enginename]/[hostname]/ROOT.xml 파일을 만들어 설정한다.  
+> xml 파일명이 Context path가 되는 구조이며 2단계 이상의 폴더 구조 Context 또한 지원한다.  
+> 경로가 /test/new와 같은 경우 test#new.xml로 파일명을 지정하면 된다.  
+>   
+> 톰캣은 context 경로가 명시적으로 설정 되어있지 않으면 다음과 같이 움직인다.  
+> [tomcat 설치 디렉토리]/webapps의 ROOT 폴더를 context path="/"로 판단한다.  
+> [tomcat 설치 디렉토리]/webapps의 서브 폴더들은 web root의 서브 경로로 취급한다.  
+>   
+> [tomcat 설치 디렉토리]/webapps에 test.war를 업로드 한다면 톰캣은 context 설정과 context path="/test" 이렇게 두 가지 경로가 혼용된다.  
