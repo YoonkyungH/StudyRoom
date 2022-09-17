@@ -138,3 +138,21 @@ docBase 값이 상대경로면 Host appBase부터의 상대경로가 되며, 절
 > [tomcat 설치 디렉토리]/webapps의 서브 폴더들은 web root의 서브 경로로 취급한다.  
 >   
 > [tomcat 설치 디렉토리]/webapps에 test.war를 업로드 한다면 톰캣은 context 설정과 context path="/test" 이렇게 두 가지 경로가 혼용된다.  
+
+> **절대경로**  
+> : 최상위 디렉토리에서 해당 파일까지 경유한 모든 경로를 전부 기입하는 방식  
+> **상대경로**  
+> : 현재 파일이 존재하는 디렉토리를 기준으로 해당 파일가지의 위치를 작성한 경로
+
+> [참고](https://base-on.tistory.com/332)  
+> 톰캣은 기본적으로 server.xml \<Host> 항목의 webapp 설정을 담당
+>
+> [tomcat_home]/webapps를 기본 어플리케이션 베이스디렉토리로. 
+> appBase 디렉토리가 설정되면 url 상의 기본 웹 루트는 [appBase]/ROOT/ 에서부터 시작.  
+> 즉, http://localhost/indexjsp를 호출하면 [appBase]/ROOT/test.jsp 를 출력  
+> 
+> **\<Context path="" docBase=""> 에서 path는 url 상의 주소가 되고 docBase는 어플리케이션 서버상 위치가 된다.**  
+> docBase가 상대 경로라면 appBase부터의 상대 경로가 되며, 절대 경로로 설정되면 서버의 절대 경로가 된다.
+> 
+> server.xml에 설정되는 \<Context> 구문과 별개로 appBase에는 사용자가 임의의 xml 파일을 만들어 추가적으로 Context를 정의할 수 있다.  
+> appBase/aaa.xml을 만들어 \<Context path="/bbb" docBase="/web1".../> 라고 할 때 http://localhost/bbb/test.jsp를 요청할 경우 /web1/test.jsp를 호출하게 된다.
