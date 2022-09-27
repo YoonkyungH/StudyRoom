@@ -156,3 +156,22 @@ docBase 값이 상대경로면 Host appBase부터의 상대경로가 되며, 절
 > 
 > server.xml에 설정되는 \<Context> 구문과 별개로 appBase에는 사용자가 임의의 xml 파일을 만들어 추가적으로 Context를 정의할 수 있다.  
 > appBase/aaa.xml을 만들어 \<Context path="/bbb" docBase="/web1".../> 라고 할 때 http://localhost/bbb/test.jsp를 요청할 경우 /web1/test.jsp를 호출하게 된다.
+
+---
+
+# META-INF
+- 자바 패키징 기술인 jar의 일부
+- META-INF 폴더는 **자바에서 설정 관련 파일**을 저장하는 폴더
+- jar 파일들을 풀어보면 META-INF 폴더 아래 MANIFEST.MF 라는 파일이 있고 서약서 내용이 있음
+
+# WEB-INF
+- 웹 애플리케이션 용으로 (servlet 규격으로) 따로 만들어진 디렉토리
+- **중요한 파일들이 노출되지 않도록 만든 폴더**
+
+> - **WEB-INF/lib**: 웹 어플리케이션에서 사용하는 jar 파일이 있는 폴더
+> - **WEB-INF/classes**: 웹 어플리케이션에서 사용하는 클래스 파일이 위치. 상업적 목적이라면 com/회사명/분류/클래스에 위치시키고, 그냥 일반 클래스 파일이라면 org/패키지네임/클래스에 위치
+> - **WEB-INF/tld**: 태그 라이브러리 관련 설정 파일은 보통 tld 폴더에 저장
+> - **WEB-INF/src**: 일반적인 소스파일 위치
+> - **WEB-INF/web.xml**: 웹 애플리케이션에 대한 전반적인 설정 정보를 저장하는 파일
+> 
+> WEB-INF폴더에 설정파일, 폴더 등이 존재하지 않더라도 WEB-INF 폴더는 반드시 존재해야 함. (톰캣에서 읽어들이는 항목)
